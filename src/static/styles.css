@@ -324,15 +324,16 @@ button {
   transition: background-color 0.2s;
 }
 
-input[type="text"],
-input[type="email"],
-input[type="password"] {
+input:not([type="checkbox"]):not([type="radio"]),
+select,
+textarea {
   background-color: var(--surface);
   color: var(--text-primary);
   border: 1px solid var(--border);
 }
 
-input::placeholder {
+input::placeholder,
+textarea::placeholder {
   color: var(--text-secondary);
 }
 
