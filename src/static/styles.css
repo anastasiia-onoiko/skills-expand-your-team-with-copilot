@@ -304,9 +304,6 @@ section h3 {
 
 .share-button {
   flex: 1 1 90px;
-  background-color: var(--primary-light);
-  color: var(--primary-text);
-  border-radius: 20px;
   font-weight: bold;
 }
 
@@ -333,6 +330,11 @@ button {
 
 .share-actions .share-button:hover {
   background-color: var(--primary);
+}
+
+.share-actions .share-button:focus-visible {
+  outline: 3px solid var(--secondary);
+  outline-offset: 2px;
 }
 
 /* Tooltip styles */

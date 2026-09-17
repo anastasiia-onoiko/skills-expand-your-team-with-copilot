@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentDay = "";
   let currentTimeRange = "";
   let sharedActivityName = "";
+  let shouldScrollToSharedActivity = false;
 
   // Authentication state
   let currentUser = null;
@@ -82,6 +83,7 @@ document.addEventListener("DOMContentLoaded", () => {
     sharedActivityName = activityFromUrl.trim();
     searchQuery = sharedActivityName;
     searchInput.value = sharedActivityName;
+    shouldScrollToSharedActivity = true;
   }
 
   function createActivityShareLink(activityName) {
@@ -117,8 +119,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  async function copyActivityShareLink(activityName, details) {
-    if (!details) {
+  async function copyActivityShareLink(activityName) {
+    if (!activityName) {
       showMessage("Unable to copy the share link. Please try again.", "error");
       return;
     }
@@ -163,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     }
 
-    await copyActivityShareLink(activityName, details);
+    await copyActivityShareLink(activityName);
   }
 
   function handleEmailShare(event) {
@@ -191,7 +193,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function handleCopyShareLink(event) {
     const activityName = event.currentTarget.dataset.activity;
-    await copyActivityShareLink(activityName, allActivities[activityName]);
+    await copyActivityShareLink(activityName);
   }
 
   // Function to set day filter
@@ -599,7 +601,7 @@ document.addEventListener("DOMContentLoaded", () => {
       renderActivityCard(name, details);
     });
 
-    if (sharedActivityName) {
+    if (sharedActivityName && shouldScrollToSharedActivity) {
       const sharedActivityCard = activitiesList.querySelector(
         ".shared-activity-card"
       );
@@ -609,6 +611,7 @@ document.addEventListener("DOMContentLoaded", () => {
           behavior: "smooth",
           block: "center",
         });
+        shouldScrollToSharedActivity = false;
       }
     }
   }
