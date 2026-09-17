@@ -24,6 +24,11 @@ document.addEventListener("DOMContentLoaded", () => {
   const loginForm = document.getElementById("login-form");
   const closeLoginModal = document.querySelector(".close-login-modal");
   const loginMessage = document.getElementById("login-message");
+  const {
+    createActivityShareLink,
+    getSharedActivityFromSearch,
+    isSharedActivity,
+  } = window.activityShareUtils;
 
   // Activity categories with corresponding colors
   const activityTypes = {
@@ -68,13 +73,8 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  function normalizeActivityName(activityName) {
-    return activityName.trim().toLowerCase();
-  }
-
   function initializeSharedActivity() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const activityFromUrl = urlParams.get("activity");
+    const activityFromUrl = getSharedActivityFromSearch(window.location.search);
 
     if (!activityFromUrl) {
       return;
@@ -84,12 +84,6 @@ document.addEventListener("DOMContentLoaded", () => {
     searchQuery = sharedActivityName;
     searchInput.value = sharedActivityName;
     shouldScrollToSharedActivity = true;
-  }
-
-  function createActivityShareLink(activityName) {
-    const shareUrl = new URL(window.location.pathname, window.location.origin);
-    shareUrl.searchParams.set("activity", activityName);
-    return shareUrl.toString();
   }
 
   function createActivityShareText(activityName, details) {
@@ -129,7 +123,13 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     try {
-      await copyTextToClipboard(createActivityShareLink(activityName));
+      await copyTextToClipboard(
+        createActivityShareLink(
+          window.location.origin,
+          window.location.pathname,
+          activityName
+        )
+      );
       showMessage(successMessage, "success");
     } catch (error) {
       showMessage("Unable to copy the share link. Please try again.", "error");
@@ -146,16 +146,24 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const shareLink = createActivityShareLink(activityName);
+    const shareLink = createActivityShareLink(
+      window.location.origin,
+      window.location.pathname,
+      activityName
+    );
     const shareText = createActivityShareText(activityName, details);
+    const shareData = {
+      title: `${activityName} | Mergington High School Activities`,
+      text: shareText,
+      url: shareLink,
+    };
 
-    if (navigator.share) {
+    if (
+      navigator.share &&
+      (!navigator.canShare || navigator.canShare(shareData))
+    ) {
       try {
-        await navigator.share({
-          title: `${activityName} | Mergington High School Activities`,
-          text: shareText,
-          url: shareLink,
-        });
+        await navigator.share(shareData);
         return;
       } catch (error) {
         if (error.name === "AbortError") {
@@ -183,7 +191,11 @@ document.addEventListener("DOMContentLoaded", () => {
       return;
     }
 
-    const shareLink = createActivityShareLink(activityName);
+    const shareLink = createActivityShareLink(
+      window.location.origin,
+      window.location.pathname,
+      activityName
+    );
     const subject = encodeURIComponent(
       `Check out ${activityName} at Mergington High School`
     );
@@ -626,7 +638,7 @@ document.addEventListener("DOMContentLoaded", () => {
   function renderActivityCard(name, details) {
     const activityCard = document.createElement("div");
     activityCard.className = "activity-card";
-    if (normalizeActivityName(name) === normalizeActivityName(sharedActivityName)) {
+    if (isSharedActivity(name, sharedActivityName)) {
       activityCard.classList.add("shared-activity-card");
     }
 
@@ -1040,8 +1052,8 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   // Initialize app
+  initializeFilters();
   initializeSharedActivity();
   checkAuthentication();
-  initializeFilters();
   fetchActivities();
 });
