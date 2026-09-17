@@ -109,8 +109,12 @@ document.addEventListener("DOMContentLoaded", () => {
     helperTextArea.style.left = "-9999px";
     document.body.appendChild(helperTextArea);
     helperTextArea.select();
-    document.execCommand("copy");
+    const didCopy = document.execCommand("copy");
     document.body.removeChild(helperTextArea);
+
+    if (!didCopy) {
+      throw new Error("Copy command was unsuccessful");
+    }
   }
 
   async function copyActivityShareLink(activityName, details) {
@@ -152,6 +156,10 @@ document.addEventListener("DOMContentLoaded", () => {
         if (error.name === "AbortError") {
           return;
         }
+
+        showMessage("Unable to open sharing options right now.", "error");
+        console.error("Error sharing activity:", error);
+        return;
       }
     }
 
@@ -706,7 +714,7 @@ document.addEventListener("DOMContentLoaded", () => {
           `
           }
         </div>
-        <div class="share-actions" aria-label="Share ${name}">
+        <div class="share-actions" role="group" aria-label="Share ${name}">
           <button type="button" class="share-button native-share-button" data-activity="${name}">
             Share
           </button>
