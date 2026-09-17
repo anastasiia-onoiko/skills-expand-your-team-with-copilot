@@ -1,6 +1,6 @@
 ### Copilot Instructions
 
-## School Overview
+### School Overview
 The school name is "Mergington High School"
 
 The school is a public high school in Mergington, Florida.
@@ -35,3 +35,18 @@ Consider the following when communicating with the staff.
 - Do not make command line tools.
 - Do not create a long single file application. Always use an easy-to-understand directory structure.
 - Only use HTML, CSS, Javascript, and Python. No other languages.
+
+### Documentation
+
+- Always update the README file to explain how to use the program. Assume the user will quickly forget so good documentation is important.
+- Once the readme gets too long, start organizing it into a docs directory.
+
+### Quality considerations
+
+- If the tasks involves grades, scores, or other numerical data, isolate those functions and make sure they are correct with unit tests.
+
+### Security considerations
+
+- Personal information might be processed so privacy and security are important.
+- Do not provide examples that encourage the user to hardcode secrets, passwords, or other sensitive information.
+- If credentials or other sensitive information is required, add features to the program to prompt for it, store it locally, and logout. For example a login dialog box.
