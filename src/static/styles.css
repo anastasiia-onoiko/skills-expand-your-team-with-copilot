@@ -32,6 +32,26 @@
   --info-light: #d1ecf1;
 }
 
+body.dark-mode {
+  --primary: #1d4ed8;
+  --primary-light: #3b82f6;
+  --primary-dark: #1e40af;
+  --secondary: #f59e0b;
+  --secondary-light: #fbbf24;
+  --secondary-dark: #d97706;
+  --background: #111827;
+  --surface: #1f2937;
+  --text-primary: #f9fafb;
+  --text-secondary: #cbd5e1;
+  --border: #374151;
+  --border-light: #4b5563;
+  --border-focus: #60a5fa;
+  --success-light: #14532d;
+  --warning-light: #78350f;
+  --error-light: #7f1d1d;
+  --info-light: #164e63;
+}
+
 * {
   box-sizing: border-box;
   margin: 0;
@@ -48,6 +68,12 @@ body {
   padding: 12px;
   background-color: var(--background);
   font-size: 0.9rem;
+  color-scheme: light;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+body.dark-mode {
+  color-scheme: dark;
 }
 
 header {
@@ -296,6 +322,18 @@ button {
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.2s;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+  background-color: var(--surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+}
+
+input::placeholder {
+  color: var(--text-secondary);
 }
 
 /* Tooltip styles */
@@ -617,6 +655,9 @@ footer {
   position: absolute;
   top: 10px;
   right: 15px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 #user-status {
