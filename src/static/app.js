@@ -48,29 +48,45 @@ document.addEventListener("DOMContentLoaded", () => {
   // Authentication state
   let currentUser = null;
 
-  function getStoredItem(key) {
+  function accessStoredItem(action, key, value = null) {
     try {
-      return localStorage.getItem(key);
+      if (action === "get") {
+        return localStorage.getItem(key);
+      }
+
+      if (action === "set") {
+        localStorage.setItem(key, value);
+      }
+
+      if (action === "remove") {
+        localStorage.removeItem(key);
+      }
     } catch (error) {
-      console.warn(`Unable to read ${key} from local storage.`, error);
-      return null;
+      const actionLabels = {
+        get: "read",
+        set: "save",
+        remove: "remove",
+      };
+
+      console.warn(
+        `Unable to ${actionLabels[action] || "access"} ${key} in local storage.`,
+        error
+      );
     }
+
+    return null;
+  }
+
+  function getStoredItem(key) {
+    return accessStoredItem("get", key);
   }
 
   function setStoredItem(key, value) {
-    try {
-      localStorage.setItem(key, value);
-    } catch (error) {
-      console.warn(`Unable to save ${key} to local storage.`, error);
-    }
+    accessStoredItem("set", key, value);
   }
 
   function removeStoredItem(key) {
-    try {
-      localStorage.removeItem(key);
-    } catch (error) {
-      console.warn(`Unable to remove ${key} from local storage.`, error);
-    }
+    accessStoredItem("remove", key);
   }
 
   function applyTheme(theme) {
@@ -93,9 +109,24 @@ document.addEventListener("DOMContentLoaded", () => {
       : "Use dark mode";
   }
 
-  function loadThemePreference() {
+  function getPreferredTheme() {
     const savedTheme = getStoredItem(themeStorageKey);
-    applyTheme(savedTheme === "dark" ? "dark" : "light");
+    if (savedTheme === "dark" || savedTheme === "light") {
+      return savedTheme;
+    }
+
+    if (
+      window.matchMedia &&
+      window.matchMedia("(prefers-color-scheme: dark)").matches
+    ) {
+      return "dark";
+    }
+
+    return "light";
+  }
+
+  function loadThemePreference() {
+    applyTheme(getPreferredTheme());
   }
 
   function toggleTheme() {
