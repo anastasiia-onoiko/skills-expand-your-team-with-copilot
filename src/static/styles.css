@@ -324,16 +324,16 @@ button {
   transition: background-color 0.2s;
 }
 
-input:not([type="checkbox"]):not([type="radio"]),
-select,
-textarea {
+body.dark-mode input:not([type="checkbox"]):not([type="radio"]),
+body.dark-mode select,
+body.dark-mode textarea {
   background-color: var(--surface);
   color: var(--text-primary);
   border: 1px solid var(--border);
 }
 
-input::placeholder,
-textarea::placeholder {
+body.dark-mode input::placeholder,
+body.dark-mode textarea::placeholder {
   color: var(--text-secondary);
 }
 
