@@ -13,6 +13,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const searchButton = document.getElementById("search-button");
   const categoryFilters = document.querySelectorAll(".category-filter");
   const dayFilters = document.querySelectorAll(".day-filter");
+  const difficultyFilters = document.querySelectorAll(".difficulty-filter");
   const timeFilters = document.querySelectorAll(".time-filter");
 
   // Authentication elements
@@ -44,6 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentFilter = "all";
   let searchQuery = "";
   let currentDay = "";
+  let currentDifficulty = "";
   let currentTimeRange = "";
   let sharedActivityName = "";
   let shouldScrollToSharedActivity = false;
@@ -585,6 +587,17 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
 
+      // Apply difficulty filter
+      if (currentDifficulty) {
+        if (currentDifficulty === "all") {
+          if (details.difficulty) {
+            return;
+          }
+        } else if (details.difficulty !== currentDifficulty) {
+          return;
+        }
+      }
+
       // Apply search filter
       const searchableContent = [
         name.toLowerCase(),
@@ -815,6 +828,22 @@ document.addEventListener("DOMContentLoaded", () => {
       // Update current day filter and fetch activities
       currentDay = button.dataset.day;
       fetchActivities();
+    });
+  });
+
+  difficultyFilters.forEach((button) => {
+    button.addEventListener("click", () => {
+      const nextDifficulty =
+        currentDifficulty === button.dataset.difficulty
+          ? ""
+          : button.dataset.difficulty;
+
+      difficultyFilters.forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.difficulty === nextDifficulty);
+      });
+
+      currentDifficulty = nextDifficulty;
+      displayFilteredActivities();
     });
   });
 
