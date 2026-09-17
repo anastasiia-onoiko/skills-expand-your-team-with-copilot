@@ -119,7 +119,10 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  async function copyActivityShareLink(activityName) {
+  async function copyActivityShareLink(
+    activityName,
+    successMessage = "Share link copied. Send it to a friend."
+  ) {
     if (!activityName) {
       showMessage("Unable to copy the share link. Please try again.", "error");
       return;
@@ -127,7 +130,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     try {
       await copyTextToClipboard(createActivityShareLink(activityName));
-      showMessage("Share link copied. Send it to a friend.", "success");
+      showMessage(successMessage, "success");
     } catch (error) {
       showMessage("Unable to copy the share link. Please try again.", "error");
       console.error("Error copying share link:", error);
@@ -159,8 +162,11 @@ document.addEventListener("DOMContentLoaded", () => {
           return;
         }
 
-        showMessage("Unable to open sharing options right now.", "error");
         console.error("Error sharing activity:", error);
+        await copyActivityShareLink(
+          activityName,
+          "Sharing options were unavailable, so the link was copied instead."
+        );
         return;
       }
     }
@@ -763,18 +769,14 @@ document.addEventListener("DOMContentLoaded", () => {
   // Event listeners for search and filter
   searchInput.addEventListener("input", (event) => {
     searchQuery = event.target.value;
-    if (normalizeActivityName(searchQuery) !== normalizeActivityName(sharedActivityName)) {
-      sharedActivityName = "";
-    }
+    shouldScrollToSharedActivity = false;
     displayFilteredActivities();
   });
 
   searchButton.addEventListener("click", (event) => {
     event.preventDefault();
     searchQuery = searchInput.value;
-    if (normalizeActivityName(searchQuery) !== normalizeActivityName(sharedActivityName)) {
-      sharedActivityName = "";
-    }
+    shouldScrollToSharedActivity = false;
     displayFilteredActivities();
   });
 
