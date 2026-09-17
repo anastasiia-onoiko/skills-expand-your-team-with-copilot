@@ -48,95 +48,18 @@ document.addEventListener("DOMContentLoaded", () => {
   // Authentication state
   let currentUser = null;
 
-  function accessStoredItem(action, key, value = null) {
-    try {
-      if (action === "get") {
-        return localStorage.getItem(key);
-      }
-
-      if (action === "set") {
-        localStorage.setItem(key, value);
-      }
-
-      if (action === "remove") {
-        localStorage.removeItem(key);
-      }
-    } catch (error) {
-      const actionLabels = {
-        get: "read",
-        set: "save",
-        remove: "remove",
-      };
-
-      console.warn(
-        `Unable to ${actionLabels[action] || "access"} ${key} in local storage.`,
-        error
-      );
-    }
-
-    return null;
-  }
-
-  function getStoredItem(key) {
-    return accessStoredItem("get", key);
-  }
-
-  function setStoredItem(key, value) {
-    accessStoredItem("set", key, value);
-  }
-
-  function removeStoredItem(key) {
-    accessStoredItem("remove", key);
-  }
-
-  function applyTheme(theme) {
-    const isDarkMode = theme === "dark";
-
-    document.body.classList.toggle("dark-mode", isDarkMode);
-
-    if (!themeToggleButton || !themeToggleIcon || !themeToggleText) {
-      return;
-    }
-
-    themeToggleButton.setAttribute("aria-pressed", String(isDarkMode));
-    themeToggleButton.setAttribute(
-      "aria-label",
-      isDarkMode ? "Switch to light mode" : "Switch to dark mode"
-    );
-    themeToggleIcon.textContent = isDarkMode ? "☀️" : "🌙";
-    themeToggleText.textContent = isDarkMode
-      ? "Use light mode"
-      : "Use dark mode";
-  }
-
-  function getPreferredTheme() {
-    const savedTheme = getStoredItem(themeStorageKey);
-    if (savedTheme === "dark" || savedTheme === "light") {
-      return savedTheme;
-    }
-
-    if (
-      window.matchMedia &&
-      window.matchMedia("(prefers-color-scheme: dark)").matches
-    ) {
-      return "dark";
-    }
-
-    return "light";
-  }
-
-  function loadThemePreference() {
-    applyTheme(getPreferredTheme());
-  }
-
-  function toggleTheme() {
-    const nextTheme = document.body.classList.contains("dark-mode")
-      ? "light"
-      : "dark";
-
-    setStoredItem(themeStorageKey, nextTheme);
-    applyTheme(nextTheme);
-  }
+  const themeManager = window.createThemeManager({
+    storage: window.localStorage,
+    matchMedia: window.matchMedia,
+    body: document.body,
+    toggleButton: themeToggleButton,
+    toggleIcon: themeToggleIcon,
+    toggleText: themeToggleText,
+    themeStorageKey,
+    logger: console,
+  });
+  const { getStoredItem, setStoredItem, removeStoredItem, loadThemePreference, toggleTheme } =
+    themeManager;
 
   // Time range mappings for the dropdown
   const timeRanges = {
