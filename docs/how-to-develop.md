@@ -57,6 +57,11 @@ These dependencies will be installed when you run `pip install -r src/requiremen
    - API documentation: http://localhost:8000/docs
    - Alternative documentation: http://localhost:8000/redoc
 
+### Website highlights
+
+- Each activity card includes Share, Email, and Copy Link buttons so students can send an activity to friends.
+- Shared activity links open the same page with that activity pre-filled in the search box for quick access.
+
 ### API Endpoints
 
 | Method | Endpoint                                                          | Description                                                         |
