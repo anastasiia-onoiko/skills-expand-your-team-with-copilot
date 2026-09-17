@@ -77,13 +77,20 @@ document.addEventListener("DOMContentLoaded", () => {
     const isDarkMode = theme === "dark";
 
     document.body.classList.toggle("dark-mode", isDarkMode);
+
+    if (!themeToggleButton || !themeToggleIcon || !themeToggleText) {
+      return;
+    }
+
     themeToggleButton.setAttribute("aria-pressed", String(isDarkMode));
     themeToggleButton.setAttribute(
       "aria-label",
       isDarkMode ? "Switch to light mode" : "Switch to dark mode"
     );
     themeToggleIcon.textContent = isDarkMode ? "☀️" : "🌙";
-    themeToggleText.textContent = isDarkMode ? "Light" : "Dark";
+    themeToggleText.textContent = isDarkMode
+      ? "Use light mode"
+      : "Use dark mode";
   }
 
   function loadThemePreference() {
@@ -291,7 +298,9 @@ document.addEventListener("DOMContentLoaded", () => {
   }
 
   // Event listeners for authentication
-  themeToggleButton.addEventListener("click", toggleTheme);
+  if (themeToggleButton) {
+    themeToggleButton.addEventListener("click", toggleTheme);
+  }
   loginButton.addEventListener("click", openLoginModal);
   logoutButton.addEventListener("click", logout);
   closeLoginModal.addEventListener("click", closeLoginModalHandler);
